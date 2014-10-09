@@ -3,6 +3,7 @@ package com.example.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.widget.ListView;
+import android.widget.TextView;
 import com.example.R;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,11 +25,15 @@ public class MainActivityTest {
   }
 
   @Test
-  public void itHasAllThePeopleOfTheWestWing() throws Exception {
+  public void itPopulatesEachViewWithTheNames() {
     ListView listView = (ListView) subject.findViewById(R.id.list_view);
     shadowOf(listView).populateItems();
 
     assertThat(listView.getChildCount()).isEqualTo(MainActivity.westWingers.size());
+    for (int i = 0; i < listView.getChildCount(); i++) {
+      TextView childAt = (TextView) listView.getChildAt(i);
+      assertThat(childAt.getText().toString()).isEqualTo(MainActivity.westWingers.get(i));
+    }
   }
 
   @Test
@@ -37,7 +42,7 @@ public class MainActivityTest {
     ShadowListView shadowListView = shadowOf(listView);
     shadowListView.populateItems();
 
-    shadowListView.performHapticFeedback(0);
+    shadowListView.performItemClick(0);
 
     Intent nextStartedActivity = shadowOf(subject).getNextStartedActivity();
     assertThat(nextStartedActivity.getComponent()).isEqualTo(PeopleActivity.class);
