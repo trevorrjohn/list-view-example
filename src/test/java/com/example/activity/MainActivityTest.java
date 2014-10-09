@@ -27,9 +27,12 @@ public class MainActivityTest {
   @Test
   public void itPopulatesEachViewWithTheNames() {
     ListView listView = (ListView) subject.findViewById(R.id.list_view);
+
     shadowOf(listView).populateItems();
 
     assertThat(listView.getChildCount()).isEqualTo(MainActivity.westWingers.size());
+
+
     for (int i = 0; i < listView.getChildCount(); i++) {
       TextView childAt = (TextView) listView.getChildAt(i);
       assertThat(childAt.getText().toString()).isEqualTo(MainActivity.westWingers.get(i));
@@ -42,9 +45,10 @@ public class MainActivityTest {
     ShadowListView shadowListView = shadowOf(listView);
     shadowListView.populateItems();
 
-    shadowListView.performItemClick(0);
+    shadowListView.clickFirstItemContainingText("Leo");
 
     Intent nextStartedActivity = shadowOf(subject).getNextStartedActivity();
-    assertThat(nextStartedActivity.getComponent()).isEqualTo(PeopleActivity.class);
+    assertThat(nextStartedActivity.getComponent().getClassName()).isEqualTo(PeopleActivity.class.getName());
+    assertThat(nextStartedActivity.getStringExtra("name")).isEqualTo("Leo");
   }
 }
